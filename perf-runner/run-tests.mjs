@@ -1,7 +1,9 @@
-import { exec, execSync } from 'child_process';
+import { execSync } from 'child_process';
 import { writeFileSync, readdirSync, statSync } from 'fs';
 import os from 'os';
 import { performance } from 'perf_hooks';
+import { readFileSync } from 'fs';
+import path from 'path';
 
 const PACKAGE_NAME = process.env.PACKAGE_NAME;
 const TEST_DIR = process.env.TEST_DIR || 'expf-tests'; // fixed, always expf-tests
@@ -23,8 +25,9 @@ async function runTest(label, installCommand, testSubfolder) {
   console.log(
     `\n--- Running test for: ${label} - test folder: ${testSubfolder} ---`
   );
-  execSync(`rm -rf ${tempDir} && mkdir -p ${tempDir}`, { stdio: 'inherit' });
-  process.chdir(tempDir);
+  const testTempDir = `${tempDir}-${label}-${testSubfolder}`;
+  execSync(`rm -rf ${testTempDir} && mkdir -p ${testTempDir}`, { stdio: 'inherit' });
+  process.chdir(testTempDir);
   execSync(`npm init -y`, { stdio: 'inherit' });
   execSync(installCommand, { stdio: 'inherit' });
   execSync(`npm install autocannon`, { stdio: 'inherit' });
@@ -82,9 +85,16 @@ async function runTest(label, installCommand, testSubfolder) {
   };
 }
 
-function compareResults(latestFile, candidateFile) {
-  const latest = JSON.parse(readFileSync(latestFile, 'utf8'));
-  const candidate = JSON.parse(readFileSync(candidateFile, 'utf8'));
+function compareResults(testSubfolder, latestFile, candidateFile) {
+  console.log(`\n--- Comparing results for: ${testSubfolder} ---`);
+  console.log(`Latest result file: ${latestFile}`);
+  console.log(`Candidate result file: ${candidateFile}`);
+  const latest = JSON.parse(
+    readFileSync(`${tempDir}-latest-${testSubfolder}/${latestFile}`, 'utf8')
+  );
+  const candidate = JSON.parse(
+    readFileSync(`${tempDir}-candidate-${testSubfolder}/${candidateFile}`, 'utf8')
+  );
 
   const latestTime = latest.serverResults.executionTimeMs;
   const candidateTime = candidate.serverResults.executionTimeMs;
@@ -117,19 +127,18 @@ async function main() {
   const testFolders = getTestFolders(`/app/${TEST_DIR}`);
 
   for (const testSubfolder of testFolders) {
-    const { resultFile: latestResult } = runTest(
-      'latest',
-      `npm install ${PACKAGE_NAME}@latest`,
-      testSubfolder
-    );
-    const { resultFile: candidateResult } = runTest(
-      'candidate',
-      `npm install /app`,
-      testSubfolder
-    );
+    console.log(`\n--- Starting parallel tests for: ${testSubfolder} ---`);
+    
+    // Run both tests in parallel
+    const [latestResult, candidateResult] = await Promise.all([
+      runTest('latest', `npm install ${PACKAGE_NAME}@latest`, testSubfolder),
+      runTest('candidate', `npm install /app`, testSubfolder)
+    ]);
 
-    console.log(`\n--- Comparing results for test folder: ${testSubfolder} ---`);
-    compareResults(latestResult, candidateResult);
+    console.log(
+      `\n--- Comparing results for test folder: ${testSubfolder} ---`
+    );
+    compareResults(testSubfolder, latestResult.resultFile, candidateResult.resultFile);
   }
 }
 
