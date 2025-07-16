@@ -2,22 +2,16 @@ FROM debian:bullseye-slim
 
 WORKDIR /runner
 
-# Install curl, git, and required dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y curl git ca-certificates bash build-essential
 
-# Install NVM
+# Install NVM (just the tool, no Node yet)
 ENV NVM_DIR=/root/.nvm
-ENV NODE_VERSIONS="18 19 20 21 22 23 24"
 
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
-    bash -c "source $NVM_DIR/nvm.sh && \
-             for v in $NODE_VERSIONS; do nvm install $v; done && \
-             nvm alias default 20 && \
-             npm install -g autocannon"
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
-# Copy test runner script into image
-COPY run-tests.mjs ./run-tests.mjs
+# Copy test runner script
+COPY run-tests.mjs .
 
-# We'll always override CMD in CI, so default here doesn't matter
+# Default command
 CMD ["bash"]
-
