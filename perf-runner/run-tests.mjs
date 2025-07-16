@@ -13,14 +13,16 @@ const tempDir = '/tmp/perf-test';
 
 // Get all subfolders (tests) inside TEST_DIR
 function getTestFolders(path) {
-  return readdirSync(path).filter(name => {
+  return readdirSync(path).filter((name) => {
     const fullPath = `${path}/${name}`;
     return statSync(fullPath).isDirectory();
   });
 }
 
 async function runTest(label, installCommand, testSubfolder) {
-  console.log(`\n--- Running test for: ${label} - test folder: ${testSubfolder} ---`);
+  console.log(
+    `\n--- Running test for: ${label} - test folder: ${testSubfolder} ---`
+  );
   execSync(`rm -rf ${tempDir} && mkdir -p ${tempDir}`, { stdio: 'inherit' });
   process.chdir(tempDir);
   execSync(`npm init -y`, { stdio: 'inherit' });
@@ -74,14 +76,60 @@ async function runTest(label, installCommand, testSubfolder) {
     );
     console.log('Result uploaded.');
   }
+
+  return {
+    resultFile: filename,
+  };
+}
+
+function compareResults(latestFile, candidateFile) {
+  const latest = JSON.parse(readFileSync(latestFile, 'utf8'));
+  const candidate = JSON.parse(readFileSync(candidateFile, 'utf8'));
+
+  const latestTime = latest.serverResults.executionTimeMs;
+  const candidateTime = candidate.serverResults.executionTimeMs;
+
+  console.log('\n--- 📊 Performance Comparison ---');
+  console.log(`Latest executionTimeMs:   ${latestTime.toFixed(2)} ms`);
+  console.log(`Candidate executionTimeMs: ${candidateTime.toFixed(2)} ms`);
+
+  const diff = latestTime - candidateTime;
+  const percent = (diff / latestTime) * 100;
+
+  if (diff > 0) {
+    console.log(
+      `✅ Candidate is faster by ${Math.abs(diff).toFixed(
+        2
+      )} ms (${percent.toFixed(2)}%)`
+    );
+  } else if (diff < 0) {
+    console.log(
+      `⚠️  Candidate is slower by ${Math.abs(diff).toFixed(2)} ms (${Math.abs(
+        percent
+      ).toFixed(2)}%)`
+    );
+  } else {
+    console.log('➖ Both versions have the same execution time.');
+  }
 }
 
 async function main() {
   const testFolders = getTestFolders(`/app/${TEST_DIR}`);
 
   for (const testSubfolder of testFolders) {
-    runTest('latest', `npm install ${PACKAGE_NAME}@latest`, testSubfolder);
-    runTest('candidate', `npm install /app`, testSubfolder);
+    const { resultFile: latestResult } = runTest(
+      'latest',
+      `npm install ${PACKAGE_NAME}@latest`,
+      testSubfolder
+    );
+    const { resultFile: candidateResult } = runTest(
+      'candidate',
+      `npm install /app`,
+      testSubfolder
+    );
+
+    console.log(`\n--- Comparing results for test folder: ${testSubfolder} ---`);
+    compareResults(latestResult, candidateResult);
   }
 }
 
