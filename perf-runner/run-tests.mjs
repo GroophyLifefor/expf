@@ -129,11 +129,8 @@ async function main() {
   for (const testSubfolder of testFolders) {
     console.log(`\n--- Starting parallel tests for: ${testSubfolder} ---`);
     
-    // Run both tests in parallel
-    const [latestResult, candidateResult] = await Promise.all([
-      runTest('latest', `npm install ${PACKAGE_NAME}@latest`, testSubfolder),
-      runTest('candidate', `npm install /app`, testSubfolder)
-    ]);
+    const latestResult = await runTest('latest', `npm install ${PACKAGE_NAME}@latest`, testSubfolder);
+    const candidateResult = await runTest('candidate', `npm install /app`, testSubfolder);
 
     console.log(
       `\n--- Comparing results for test folder: ${testSubfolder} ---`
