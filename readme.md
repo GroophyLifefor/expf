@@ -30,7 +30,7 @@ sudo rm -fr ./*
 - [x] Optionally send results to PR comment
 - [ ] split run-tests.mjs into multiple files for more readable code
 - [ ] Optionally send results to external dashboard
-- [ ] Optimize Dockerfile, it's big as hell (149.9 MB)
+- [x] Optimize Dockerfile, it's big as hell (149.9 MB) (decreased to 55.9 MB)
 - [ ] Add act (Run your GitHub Actions locally) support
 - [ ] Fix repeating logics in client repositories, extract reuseable logic into npm package
 - [ ] Make each test folder has static package.json, not dynamic
