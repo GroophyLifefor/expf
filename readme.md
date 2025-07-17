@@ -30,3 +30,4 @@ sudo rm -fr ./*
 - [x] Optionally send results to PR comment
 - [ ] Optionally send results to external dashboard
 - [ ] Optimize Dockerfile, it's big as hell (149.9 MB)
+- [ ] Add act (Run your GitHub Actions locally) support

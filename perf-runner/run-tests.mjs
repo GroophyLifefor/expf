@@ -14,6 +14,7 @@ const isPR = !!PR_ID;
 const GITHUB_TOKEN = process.env.COMMENTTOKEN || '';
 const REPOSITORY_OWNER = process.env.REPOSITORY_OWNER || '';
 const REPOSITORY = process.env.REPOSITORY || '';
+const PATH_PREFIX = process.env.PATH_PREFIX || '/app';
 
 console.log('PR', {
   isPR,
@@ -303,7 +304,7 @@ async function postComment(message) {
 }
 
 async function main() {
-  const testFolders = getTestFolders(`/app/${TEST_DIR}`);
+  const testFolders = getTestFolders(`${PATH_PREFIX}/${TEST_DIR}`);
   const compareList = [];
 
   for (const testSubfolder of testFolders) {
