@@ -28,6 +28,7 @@ sudo rm -fr ./*
 - [x] Extract req/sec, latency, throughput from autocannon output
 - [x] Create Markdown or CSV table for all test comparisons
 - [x] Optionally send results to PR comment
+- [ ] split run-tests.mjs into multiple files for more readable code
 - [ ] Optionally send results to external dashboard
 - [ ] Optimize Dockerfile, it's big as hell (149.9 MB)
 - [ ] Add act (Run your GitHub Actions locally) support
