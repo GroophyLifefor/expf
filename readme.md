@@ -2,7 +2,7 @@
 ## Build
 
 ```
-docker build -t muratkirazkaya/perf-runner:latest .
+docker build -t muratkirazkaya/perf-runner:latest -f perf-runner/Dockerfile perf-runner
 ```
 
 ## Publish
