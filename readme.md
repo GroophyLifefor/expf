@@ -32,9 +32,9 @@ sudo rm -fr ./*
 - [ ] Optionally send results to external dashboard
 - [x] Optimize Dockerfile, it's big as hell (149.9 MB) (decreased to 55.9 MB)
 - [ ] Add act (Run your GitHub Actions locally) support
-- [ ] Fix repeating logics in client repositories, extract reuseable logic into npm package
+- [x] Fix repeating logics in client repositories, extract reuseable logic into npm package (used template mechanism)
 - [x] Make each test folder has static package.json, not dynamic (so we don't need to have dependency of testing libraries in our library)
-- [ ] Decrease file count 2 to 1 with like as 
+- [x] Decrease file count 2 to 1 with like as 
 ```js
 // /expf-tests/simple/main.mjs
 class PerfTest {

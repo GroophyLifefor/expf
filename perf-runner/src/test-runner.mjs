@@ -11,23 +11,26 @@ export async function runTest(label, installCommand, testSubfolder) {
   console.log(
     `\n--- Running test for: ${label} - test folder: ${testSubfolder} ---`
   );
-  
+
   const testTempDir = `${config.tempDir}-${label}-${testSubfolder}`;
   execSync(`rm -rf ${testTempDir} && mkdir -p ${testTempDir}`, {
     stdio: 'inherit',
   });
-  
+
   process.chdir(testTempDir);
   // Copy test files to the temp directory
-  execSync(`cp -r ${config.PATH_PREFIX}/${config.TEST_DIR}/${testSubfolder}/* .`, {
-    stdio: 'inherit',
-  });
+  execSync(
+    `cp -r ${config.PATH_PREFIX}/${config.TEST_DIR}/${testSubfolder}/* .`,
+    {
+      stdio: 'inherit',
+    }
+  );
   // Copy all template files to the templates directory
   execSync('mkdir -p ./templates');
-  execSync(`cp ${config.PATH_PREFIX}/${config.TEST_DIR}/* ./templates`, {
+  execSync(`cp ${config.PATH_PREFIX}/${config.TEST_DIR}/*.mjs ./templates/`, {
     stdio: 'inherit',
   });
-  
+
   execSync('npm i', { stdio: 'inherit' });
   execSync(installCommand, { stdio: 'inherit' });
 
@@ -37,7 +40,7 @@ export async function runTest(label, installCommand, testSubfolder) {
 
   const result = createResultObject(start, end, output);
   const filename = `result-${label}-${testSubfolder}-${Date.now()}.json`;
-  
+
   writeFileSync(filename, JSON.stringify(result, null, 2));
   console.log(`Saved result to: ${filename}`);
 
@@ -93,7 +96,7 @@ function createResultObject(start, end, output) {
   const autocannonData = output.match(
     /---start:expf-autocanon-data---([\s\S]*?)---end:expf-autocanon-data---/
   );
-  
+
   if (!autocannonData) {
     throw new Error('No autocannon data found in output!');
   } else {
