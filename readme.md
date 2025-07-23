@@ -30,7 +30,7 @@ sudo rm -fr ./*
 <details>
 <summary>Sequence Diagram</summary>
 
-![sequence-diagram](seqDiagram.svg)
+![sequence-diagram](seq-diagram.svg)
 </details>
 
 ### TODO
