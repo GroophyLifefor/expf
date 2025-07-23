@@ -16,8 +16,9 @@ ENV NVM_DIR=/root/.nvm
 
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
-# Copy test runner script
+# Copy all performance runner files
 COPY run-tests.mjs .
+COPY src/ ./src/
 
 # Default command
 CMD ["bash"]

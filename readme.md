@@ -28,12 +28,12 @@ sudo rm -fr ./*
 - [x] Extract req/sec, latency, throughput from autocannon output
 - [x] Create Markdown or CSV table for all test comparisons
 - [x] Optionally send results to PR comment
-- [ ] split run-tests.mjs into multiple files for more readable code
+- [x] split run-tests.mjs into multiple files for more readable code
 - [ ] Optionally send results to external dashboard
 - [x] Optimize Dockerfile, it's big as hell (149.9 MB) (decreased to 55.9 MB)
 - [ ] Add act (Run your GitHub Actions locally) support
 - [ ] Fix repeating logics in client repositories, extract reuseable logic into npm package
-- [ ] Make each test folder has static package.json, not dynamic
+- [x] Make each test folder has static package.json, not dynamic (so we don't need to have dependency of testing libraries in our library)
 - [ ] Decrease file count 2 to 1 with like as 
 ```js
 // /expf-tests/simple/main.mjs
