@@ -21,7 +21,17 @@ sudo rm -fr ./*
 
 ## Diagram
 
+<details>
+<summary>Vertical Diagram</summary>
+
 ![diagram](diagram.svg)
+</details>
+
+<details>
+<summary>Sequence Diagram</summary>
+
+![sequence-diagram](seqDiagram.svg)
+</details>
 
 ### TODO
 
