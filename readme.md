@@ -19,6 +19,10 @@ Hub Repo: https://hub.docker.com/r/muratkirazkaya/perf-runner
 sudo rm -fr ./*
 ```
 
+## Diagram
+
+![diagram](diagram.svg)
+
 ### TODO
 
 - [x] Run perf-test-lib tests inside Docker for multiple Node.js versions
