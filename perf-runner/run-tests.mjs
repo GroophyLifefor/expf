@@ -60,9 +60,8 @@ async function runTest(label, installCommand, testSubfolder) {
     stdio: 'inherit',
   });
   process.chdir(testTempDir);
-  execSync(`npm init -y`, { stdio: 'inherit' });
+  execSync('npm i', { stdio: 'inherit' });
   execSync(installCommand, { stdio: 'inherit' });
-  execSync(`npm install autocannon`, { stdio: 'inherit' });
   execSync(`cp -r /app/${TEST_DIR}/${testSubfolder}/* .`, { stdio: 'inherit' });
 
   const start = performance.now();
